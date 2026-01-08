@@ -42,7 +42,7 @@ A production-ready payment gateway system with merchant onboarding, payment orde
 
 1. **Clone the repository**
    ```bash
-   git clone <your-repo-url>
+   git clone <https://github.com/srinadh93/payment-gateway-project>
    cd payment-gateway
    ```
 
