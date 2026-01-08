@@ -5,33 +5,31 @@ services:
     image: postgres:15-alpine
     container_name: pg_gateway
     environment:
-      POSTGRES_DB: payment_gateway
       POSTGRES_USER: gateway_user
       POSTGRES_PASSWORD: gateway_pass
+      POSTGRES_DB: payment_gateway
     ports:
       - "5432:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U gateway_user -d payment_gateway"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   api:
-    build:
-      context: ./backend
+    build: ./backend
     container_name: gateway_api
-    ports:
-      - "8000:8000"
-    environment:
-      DATABASE_URL: postgresql://gateway_user:gateway_pass@postgres:5432/payment_gateway
-      PORT: 8000
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/payment_gateway
+      - SPRING_DATASOURCE_USERNAME=gateway_user
+      - SPRING_DATASOURCE_PASSWORD=gateway_pass
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - TEST_MERCHANT_EMAIL=demo@example.com
+      - TEST_MERCHANT_PASSWORD=password123
+      - TEST_API_KEY=pk_test_12345
+      - TEST_API_SECRET=sk_test_12345
 
   dashboard:
-    build:
-      context: ./frontend
+    build: ./frontend
     container_name: gateway_dashboard
     ports:
       - "3000:80"
@@ -39,8 +37,7 @@ services:
       - api
 
   checkout:
-    build:
-      context: ./checkout-page
+    build: ./checkout-page
     container_name: gateway_checkout
     ports:
       - "3001:80"

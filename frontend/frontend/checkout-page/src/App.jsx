@@ -7,11 +7,13 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* This route handles the home page "/" */}
+        {/* THIS IS THE FIX */}
         <Route path="/" element={<Checkout />} />
+        
+        <Route path="/checkout" element={<Checkout />} />
         <Route path="/success" element={<Success />} />
         <Route path="/failure" element={<Failure />} />
       </Routes>
     </BrowserRouter>
- );
+  );
 }
